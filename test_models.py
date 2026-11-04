@@ -1,10 +1,14 @@
 import os
 import requests
 
-# Reads your secret key directly from the GitHub environment
+# Fixed to read LLM_API_KEY directly from the environment
 api_key = os.environ.get("LLM_API_KEY")
-url = "https://api.groq.com/openai/v1/models"
 
+if not api_key:
+    print("ERROR: LLM_API_KEY environment variable is missing or empty!")
+    exit(1)
+
+url = "https://api.groq.com/openai/v1/models"
 headers = {
     "Authorization": f"Bearer {api_key}",
     "Content-Type": "application/json"
