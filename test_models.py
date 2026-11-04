@@ -1,12 +1,32 @@
 import os
 import requests
 
+# Reads your LLM_API_KEY secret from the GitHub environment
 api_key = os.environ.get("LLM_API_KEY")
-
-print(f"DEBUG: LLM_API_KEY type is: {type(api_key)}")
-print(f"DEBUG: LLM_API_KEY length is: {len(api_key) if api_key else 'None/Empty'}")
 
 if not api_key:
     print("ERROR: LLM_API_KEY environment variable is missing or empty!")
-    print("Check if your repository secret is named exactly 'LLM_API_KEY' in Settings > Secrets > Actions.")
     exit(1)
+
+url = "https://api.groq.com/openai/v1/models"
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
+}
+
+print("Querying Groq API for active models...")
+
+try:
+    response = requests.get(url, headers=headers, timeout=15)
+    if response.status_code == 200:
+        models = response.json().get("data", [])
+        print("\n===========================================")
+        print("   ACTIVE GROQ MODELS FOR YOUR API KEY     ")
+        print("===========================================")
+        for m in models:
+            print(f"- {m.get('id')}")
+        print("===========================================\n")
+    else:
+        print(f"Failed with Status Code {response.status_code}: {response.text}")
+except Exception as e:
+    print(f"An error occurred: {e}")
