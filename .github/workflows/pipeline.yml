@@ -1,7 +1,7 @@
 name: Test Groq Models
 
 on:
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   run-test:
@@ -22,6 +22,6 @@ jobs:
 
       - name: Run Test Models Script
         env:
-          GROQ_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           python test_models.py
