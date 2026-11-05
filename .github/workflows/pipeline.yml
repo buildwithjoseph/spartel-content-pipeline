@@ -2,12 +2,13 @@ name: AI Content Pipeline Automation
 
 on:
   workflow_dispatch:
+  schedule:
+    # Optional: Runs automatically every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    
-    # CRITICAL: Gives the workflow permission to commit and push back to your repo
     permissions:
       contents: write
 
@@ -29,6 +30,7 @@ jobs:
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
         run: |
           python main.py
 
@@ -37,5 +39,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git diff --staged --quiet || git commit -m "auto: generated multi-source content brief"
+          git diff --staged --quiet || git commit -m "auto: generated humanized dev.to draft"
           git push
